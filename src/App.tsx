@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import './App.scss'
+import Progress from './container/Progress'
+import Filter from './container/Filter';
+import MainSection from './container/MainSection'
+import Container from './components/Container'
+import { connect } from 'react-redux'
+import { fetchTodos } from './store/actions'
+import { bindActionCreators } from 'redux';
+function App({ fetchTodos }: any) {
+  const [filter, setFilter] = useState<string>('All')
+  useEffect(() => {
+    return () => {
+      fetchTodos()
+    }
+  })
 
-function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Container>
+        <Progress />
+        <Filter filterTodos={(option: string) => { setFilter(option) }} />
+        <MainSection onFilter={filter} />
+      </Container>
     </div>
   );
 }
-
-export default App;
+const mapDispatch = (dispatch: any) => bindActionCreators({ fetchTodos }, dispatch)
+export default connect(null, mapDispatch)(App);
